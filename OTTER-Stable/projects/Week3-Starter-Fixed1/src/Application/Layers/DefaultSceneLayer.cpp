@@ -103,6 +103,10 @@ void DefaultSceneLayer::OnUpdate()
 		enemy->Get<Gameplay::Physics::RigidBody>()->SetAngularFactor(glm::vec3(0.0f, 0.0f, 0.0f));
 		enemy->Get<Gameplay::Physics::RigidBody>()->SetLinearDamping(0.9f);
 		activated = true;
+
+		MarioTex = ResourceManager::CreateAsset<Texture2D>("textures/Mario_Tex1.png");
+		KoopaTex = ResourceManager::CreateAsset<Texture2D>("textures/koopa_Tex.png");
+		GroundTex = ResourceManager::CreateAsset<Texture2D>("textures/ground.png");
 	}
 	if (activated)
 	{
@@ -120,6 +124,18 @@ void DefaultSceneLayer::OnUpdate()
 			win = true;
 			std::cout << "You defeated the koopa! Congratulations\n";
 		}
+	}
+	if (glfwGetKey(app.GetWindow(), GLFW_KEY_N) && GLFW_PRESS)//disable tex
+	{
+		player->Get<RenderComponent>()->GetMaterial()->Set("no_tex", true);
+		enemy->Get<RenderComponent>()->GetMaterial()->Set("no_tex", true);
+		_currentScene->FindObjectByName("Plane")->Get<RenderComponent>()->GetMaterial()->Set("no_tex", true);
+	}
+	if (glfwGetKey(app.GetWindow(), GLFW_KEY_Y) && GLFW_PRESS)//enable tex
+	{
+		player->Get<RenderComponent>()->GetMaterial()->Set("no_tex", false);
+		enemy->Get<RenderComponent>()->GetMaterial()->Set("no_tex", false);
+		_currentScene->FindObjectByName("Plane")->Get<RenderComponent>()->GetMaterial()->Set("no_tex", false);
 	}
 
 }
@@ -231,7 +247,7 @@ void DefaultSceneLayer::_CreateScene()
 		scene->SetSkyboxRotation(glm::rotate(MAT4_IDENTITY, glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f)));
 
 		// Loading in a color lookup table
-		Texture3D::Sptr lut = ResourceManager::CreateAsset<Texture3D>("luts/cool.CUBE");  
+		Texture3D::Sptr lut = ResourceManager::CreateAsset<Texture3D>("luts/Winter.CUBE");  
 
 		// Configure the color correction LUT
 		scene->SetColorLUT(lut);
@@ -243,12 +259,14 @@ void DefaultSceneLayer::_CreateScene()
 			boxMaterial->Name = "Box";
 			boxMaterial->Set("u_Material.Diffuse", GroundTex);
 			boxMaterial->Set("u_Material.Shininess", 0.1f);
+			boxMaterial->Set("no_tex", false);
 		}
 		Material::Sptr MarioMaterial = ResourceManager::CreateAsset<Material>(basicShader);
 		{
 			MarioMaterial->Name = "Mario";
 			MarioMaterial->Set("u_Material.Diffuse", MarioTex);
 			MarioMaterial->Set("u_Material.Shininess", 0.1f);
+			MarioMaterial->Set("no_tex", false);
 		}
 
 		Material::Sptr KoopaMaterial = ResourceManager::CreateAsset<Material>(basicShader);
@@ -256,6 +274,7 @@ void DefaultSceneLayer::_CreateScene()
 			KoopaMaterial->Name = "Koopa";
 			KoopaMaterial->Set("u_Material.Diffuse", KoopaTex);
 			KoopaMaterial->Set("u_Material.Shininess", 0.1f);
+			KoopaMaterial->Set("no_tex", false);
 		}
 
 		// This will be the reflective material, we'll make the whole thing 90% reflective

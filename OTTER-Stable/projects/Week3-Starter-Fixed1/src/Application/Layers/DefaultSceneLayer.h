@@ -6,6 +6,7 @@
 #include "Gameplay/Scene.h"
 #include "Gameplay/MeshResource.h"
 
+
 /**
  * This example layer handles creating a default test scene, which we will use 
  * as an entry point for creating a sample scene
@@ -31,6 +32,10 @@ protected:
 	Gameplay::GameObject::Sptr player;
 	Gameplay::GameObject::Sptr enemy;
 	bool activated = false;
+
+	Texture2D::Sptr    MarioTex = nullptr;
+	Texture2D::Sptr    KoopaTex = nullptr;
+	Texture2D::Sptr    GroundTex = nullptr;
 
 	bool win = false;
 	bool lose = false;

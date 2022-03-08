@@ -32,6 +32,8 @@ uniform Material u_Material;
 #include "../fragments/frame_uniforms.glsl"
 #include "../fragments/color_correction.glsl"
 
+uniform bool no_tex;
+
 // https://learnopengl.com/Advanced-Lighting/Advanced-Lighting
 void main() {
 	// Normalize our input normal
@@ -46,5 +48,13 @@ void main() {
 	// combine for the final result
 	vec3 result = lightAccumulation  * inColor * textureColor.rgb;
 
-	frag_color = vec4(ColorCorrect(result), textureColor.a);
+	if (no_tex)
+	{
+		frag_color = vec4(vec3(1.0, 1.0, 1.0), 1.0);
+	}
+	else
+	{
+		frag_color = vec4(ColorCorrect(result), textureColor.a);
+	}
+
 }

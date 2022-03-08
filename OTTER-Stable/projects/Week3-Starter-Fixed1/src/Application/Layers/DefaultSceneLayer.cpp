@@ -152,7 +152,7 @@ void DefaultSceneLayer::_CreateScene()
 
 		// Load in the meshes
 		MeshResource::Sptr monkeyMesh = ResourceManager::CreateAsset<MeshResource>("Monkey.obj");
-		MeshResource::Sptr MarioMesh = ResourceManager::CreateAsset<MeshResource>("mario.obj");
+		MeshResource::Sptr MarioMesh = ResourceManager::CreateAsset<MeshResource>("Mario.obj");
 		MeshResource::Sptr KoopaMesh = ResourceManager::CreateAsset<MeshResource>("koopa.obj");
 
 		// Load in some textures

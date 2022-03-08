@@ -32,6 +32,7 @@ void JumpBehaviour::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physi
 	{
 		activated = true;
 		in_air = false;
+		
 	}
 }
 

@@ -42,6 +42,11 @@
 #include "Gameplay/Components/TriggerVolumeEnterBehaviour.h"
 #include "Gameplay/Components/SimpleCameraControl.h"
 #include "Gameplay/Components/ParticleSystem.h"
+#include "Gameplay/Components/PlayerMovementBehavior.h"
+#include "Gameplay/Components/FollowBehaviour.h"
+#include "Gameplay/Components/GroundBehaviour.h"
+#include "Gameplay/Components/PlayerHealth.h"
+#include "Gameplay/Components/EnemyHealth.h"
 
 // GUI
 #include "Gameplay/Components/GUI/RectTransform.h"
@@ -270,6 +275,12 @@ void Application::_RegisterClasses()
 	ComponentManager::RegisterType<GuiPanel>();
 	ComponentManager::RegisterType<GuiText>();
 	ComponentManager::RegisterType<ParticleSystem>();
+
+	ComponentManager::RegisterType<PlayerMovementBehavior>();
+	ComponentManager::RegisterType<FollowBehaviour>();
+	ComponentManager::RegisterType<GroundBehaviour>();
+	ComponentManager::RegisterType<PlayerHealth>();
+	ComponentManager::RegisterType<EnemyHealth>();
 }
 
 void Application::_Load() {

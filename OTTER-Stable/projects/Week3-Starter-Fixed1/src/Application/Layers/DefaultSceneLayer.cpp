@@ -46,6 +46,11 @@
 #include "Gameplay/Components/MaterialSwapBehaviour.h"
 #include "Gameplay/Components/TriggerVolumeEnterBehaviour.h"
 #include "Gameplay/Components/SimpleCameraControl.h"
+#include "Gameplay/Components/PlayerMovementBehavior.h"
+#include "Gameplay/Components/FollowBehaviour.h"
+#include "Gameplay/Components/GroundBehaviour.h"
+#include "Gameplay/Components/PlayerHealth.h"
+#include "Gameplay/Components/EnemyHealth.h"
 
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
@@ -465,7 +470,7 @@ void DefaultSceneLayer::_CreateScene()
 
 			trigger->Add<TriggerVolumeEnterBehaviour>();
 		}
-
+		
 		/////////////////////////// UI //////////////////////////////
 		/*
 		GameObject::Sptr canvas = scene->CreateGameObject("UI Canvas");

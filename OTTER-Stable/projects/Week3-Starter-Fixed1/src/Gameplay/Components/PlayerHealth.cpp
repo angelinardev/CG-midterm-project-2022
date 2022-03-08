@@ -4,7 +4,7 @@
 #include "Gameplay/Scene.h"
 #include "Utils/ImGuiHelper.h"
 #include "Application/Application.h"
-
+#include "JumpBehaviour.h"
 
 void PlayerHealth::Awake()
 {
@@ -20,8 +20,11 @@ void PlayerHealth::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physic
 {
 	if (body->GetGameObject()->Name == "Player" && !dead) //this trigger has entered to the player
 	{
-		is_attacking = true;
-		body2 = body;
+		if (!body->GetGameObject()->Get<JumpBehaviour>()->in_air)//not jumping
+		{
+			is_attacking = true;
+			body2 = body;
+		} 
 	}
 }
 
@@ -39,7 +42,6 @@ void PlayerHealth::RenderImGui() {
 
 nlohmann::json PlayerHealth::ToJson() const {
 	return {
-		{ }
 	};
 }
 
@@ -63,6 +65,8 @@ void PlayerHealth::Update(float deltaTime) {
 	if (is_attacking)
 	{
 		health -= 25;
+		std::cout << "Player health = " << health << std::endl;
+
 		glm::mat3 globalRot = glm::mat3_cast(GetGameObject()->GetRotation());
 		direction = glm::normalize(glm::vec3(globalRot[2][0], globalRot[2][1], globalRot[2][2]));
 		direction *= -1.0f;

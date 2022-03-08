@@ -45,7 +45,7 @@ protected:
 	Gameplay::Scene* _scene;
 	Gameplay::GameObject::Sptr target;
 	glm::vec3 _movementVector = glm::vec3(0.0f, 0.0f, 0.0f);
-	float _maxVelocity = 10.0f;
+	float _maxVelocity = 3.0f;
 	float slowingRadius = 5.0f;
 	float _desiredVelocity = 0.0f;
 	

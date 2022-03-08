@@ -4,7 +4,7 @@
 #include "Gameplay/Scene.h"
 #include "Utils/ImGuiHelper.h"
 #include "Application/Application.h"
-
+#include "JumpBehaviour.h"
 
 void EnemyHealth::Awake()
 {
@@ -18,15 +18,18 @@ void EnemyHealth::Awake()
 
 void EnemyHealth::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& body)
 {
-	if (body->GetGameObject()->Name == "Player" && !dead) //player has come in contact with the health box
+	if (body->GetGameObject()->Name == "Enemy" && !dead) //player has come in contact with the health box
 	{
-		was_hit = true;
+		if (GetGameObject()->Get<JumpBehaviour>()->in_air) //player is in air
+		{
+			was_hit = true;
+		}
 	}
 }
 
 void EnemyHealth::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body)
 {
-	if (body->GetGameObject()->Name == "Player" && !dead) //player has come in contact with the health box
+	if (body->GetGameObject()->Name == "Enemy" && !dead) //player has come in contact with the health box
 	{
 		was_hit = false;
 	}
@@ -38,7 +41,6 @@ void EnemyHealth::RenderImGui() {
 
 nlohmann::json EnemyHealth::ToJson() const {
 	return {
-		{ }
 	};
 }
 
@@ -61,7 +63,9 @@ void EnemyHealth::Update(float deltaTime) {
 	Application& app = Application::Get();
 	if (was_hit)
 	{
+		_body->ApplyImpulse(glm::vec3(0.0f, 0.0f, 2.0f));
 		health -= 25;
+		std::cout << "Enemy health = " << health << std::endl;
 		was_hit = false;
 		if (health <= 0)
 		{

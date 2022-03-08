@@ -107,7 +107,7 @@ void DefaultSceneLayer::OnUpdate()
 			lose = true;
 			std::cout << "Sorry, you lost to the koopa!/n";
 		}
-		else if (enemy->Get<EnemyHealth>()->dead)
+		else if (player->Get<EnemyHealth>()->dead)
 		{
 			win = true;
 			std::cout << "You defeated the koopa! Congratulations\n";
@@ -382,8 +382,18 @@ void DefaultSceneLayer::_CreateScene()
 			renderer->SetMaterial(boxMaterial);
 
 			// Attach a plane collider that extends infinitely along the X/Y axis
-			RigidBody::Sptr physics = plane->Add<RigidBody>(/*static by default*/);
-			physics->AddCollider(BoxCollider::Create(glm::vec3(50.0f, 50.0f, 1.0f)))->SetPosition({ 0,0,-1 });
+			Gameplay::Physics::RigidBody::Sptr physics = plane->Add<Gameplay::Physics::RigidBody>(RigidBodyType::Kinematic);
+			Gameplay::Physics::BoxCollider::Sptr box = Gameplay::Physics::BoxCollider::Create();
+			//box->SetPosition(glm::vec3(0.04f, 0.6f, 0.18f));
+			box->SetScale(glm::vec3(50.0f, -0.12f, 50.0f));
+			physics->AddCollider(box);
+			Gameplay::Physics::TriggerVolume::Sptr volume = plane->Add<Gameplay::Physics::TriggerVolume>();
+			Gameplay::Physics::BoxCollider::Sptr box2 = Gameplay::Physics::BoxCollider::Create();
+			//box2->SetPosition(glm::vec3(0.00f, 0.05f, 0.0f));
+			box2->SetScale(glm::vec3(50.0f, -0.12f, 50.0f));
+			volume->AddCollider(box2);
+			//give to our floor tiles to tag them
+			GroundBehaviour::Sptr behaviour = plane->Add<GroundBehaviour>();
 		}
 
 		GameObject::Sptr wall1 = scene->CreateGameObject("wall1");
@@ -442,45 +452,69 @@ void DefaultSceneLayer::_CreateScene()
 			physics->AddCollider(BoxCollider::Create(glm::vec3(50.0f, 50.0f, 1.0f)))->SetPosition({ 0,0,-1 });
 		}
 
-		GameObject::Sptr Mario = scene->CreateGameObject("Mario");
+		GameObject::Sptr Mario = scene->CreateGameObject("Player");
 		{
 			// Set position in the scene
-			Mario->SetPostion(glm::vec3(-4.5f, 0.0f, 1.0f));
+			Mario->SetPostion(glm::vec3(-4.5f, 0.0f, 2.8f));
 			Mario->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
-
-			// Add some behaviour that relies on the physics body
-			Mario->Add<JumpBehaviour>();
 
 			// Create and attach a renderer for the monkey
 			RenderComponent::Sptr renderer = Mario->Add<RenderComponent>();
 			renderer->SetMesh(MarioMesh);
 			renderer->SetMaterial(MarioMaterial);
+			// Add a dynamic rigid body to this monkey
+			Gameplay::Physics::RigidBody::Sptr physics = Mario->Add<Gameplay::Physics::RigidBody>(RigidBodyType::Dynamic);
+			Gameplay::Physics::BoxCollider::Sptr box = Gameplay::Physics::BoxCollider::Create();
+			box->SetPosition(glm::vec3(2.02f, 1.62f, -0.95f));
+			box->SetScale(glm::vec3(1.24f, 2.38f, 0.79f));
+			//box->SetExtents(glm::vec3(0.8, 2.68, 0.83));
+			physics->AddCollider(box);
+			Gameplay::Physics::TriggerVolume::Sptr volume = Mario->Add<Gameplay::Physics::TriggerVolume>();
+			Gameplay::Physics::BoxCollider::Sptr box2 = Gameplay::Physics::BoxCollider::Create();
 
-			// Example of a trigger that interacts with static and kinematic bodies as well as dynamic bodies
-			TriggerVolume::Sptr trigger = Mario->Add<TriggerVolume>();
-			trigger->SetFlags(TriggerTypeFlags::Statics | TriggerTypeFlags::Kinematics);
-			trigger->AddCollider(BoxCollider::Create(glm::vec3(1.0f)));
+			box2->SetPosition(glm::vec3(2.02f, 1.62f, -0.95f));
+			box2->SetScale(glm::vec3(1.24f, 2.38f, 0.79f));
+			//box2->SetExtents(glm::vec3(0.8, 2.68, 0.83));
+			volume->AddCollider(box2);
+			JumpBehaviour::Sptr behaviour = Mario->Add<JumpBehaviour>();
+			//CollectTrashBehaviour::Sptr behaviour2 = trashyM->Add<CollectTrashBehaviour>();
 
-			Mario->Add<TriggerVolumeEnterBehaviour>();
+			PlayerMovementBehavior::Sptr movement = Mario->Add<PlayerMovementBehavior>();
+			EnemyHealth::Sptr behaviour2 = Mario->Add<EnemyHealth>();
+
 		}
 
-		GameObject::Sptr Koopa = scene->CreateGameObject("Koopa");
+		GameObject::Sptr Koopa = scene->CreateGameObject("Enemy");
 		{
 			// Set position in the scene
-			Koopa->SetPostion(glm::vec3(4.5f, 0.0f, 1.0f));
+			Koopa->SetPostion(glm::vec3(4.5f, 0.0f, 2.0f));
 			Koopa->SetRotation(glm::vec3(90.0f, 00.0f, 180.0f));
 
 			// Create and attach a renderer for the monkey
 			RenderComponent::Sptr renderer = Koopa->Add<RenderComponent>();
 			renderer->SetMesh(KoopaMesh);
 			renderer->SetMaterial(KoopaMaterial);
+			
+				Gameplay::Physics::RigidBody::Sptr physics = Koopa->Add<Gameplay::Physics::RigidBody>(RigidBodyType::Dynamic);
+			Gameplay::Physics::BoxCollider::Sptr box = Gameplay::Physics::BoxCollider::Create();
+			box->SetPosition(glm::vec3(-2.51f, 1.33f, -0.09f));
+			box->SetScale(glm::vec3(1.04f, 1.99f, 1.67f));
+			//box->SetExtents(glm::vec3(0.8, 2.68, 0.83));
+			physics->AddCollider(box);
+			Gameplay::Physics::TriggerVolume::Sptr volume = Koopa->Add<Gameplay::Physics::TriggerVolume>();
+			Gameplay::Physics::BoxCollider::Sptr box2 = Gameplay::Physics::BoxCollider::Create();
 
-			// Example of a trigger that interacts with static and kinematic bodies as well as dynamic bodies
-			TriggerVolume::Sptr trigger = Koopa->Add<TriggerVolume>();
-			trigger->SetFlags(TriggerTypeFlags::Statics | TriggerTypeFlags::Kinematics);
-			trigger->AddCollider(BoxCollider::Create(glm::vec3(1.0f)));
+			box2->SetPosition(glm::vec3(-2.51f, 1.33f, -0.09f));
+			box2->SetScale(glm::vec3(1.04f, 1.99f, 1.67f));
+			//box2->SetExtents(glm::vec3(0.8, 2.68, 0.83));
+			volume->AddCollider(box2);
+			//follow mario
+			FollowBehaviour::Sptr behaviour = Koopa->Add<FollowBehaviour>();
+			behaviour->SetTarget(Mario);
 
-			Koopa->Add<TriggerVolumeEnterBehaviour>();
+			
+			PlayerHealth::Sptr behaviour3 = Koopa->Add<PlayerHealth>();
+			
 		}
 
 		GameObject::Sptr demoBase = scene->CreateGameObject("Demo Parent");

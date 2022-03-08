@@ -51,7 +51,7 @@ void JumpBehaviour::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physi
 
 JumpBehaviour::JumpBehaviour() :
 	IComponent(),
-	_impulse(3.0f)
+	_impulse(2.5f)
 { }
 
 JumpBehaviour::~JumpBehaviour() = default;
@@ -65,18 +65,22 @@ JumpBehaviour::Sptr JumpBehaviour::FromJson(const nlohmann::json& blob) {
 
 void JumpBehaviour::Update(float deltaTime) {
 	
-	if (activated)
+	//if (activated)
 	{
 		Application& app = Application::Get();
 
 		if (glfwGetKey(app.GetWindow(), GLFW_KEY_SPACE)&& GLFW_PRESS) {
 			_body->ApplyImpulse(glm::vec3(0.0f, 0.0f, _impulse));
+			in_air = true;
+
+
 			Gameplay::IComponent::Sptr ptr = Panel.lock();
 			if (ptr != nullptr) {
 				ptr->IsEnabled = !ptr->IsEnabled;
 			}
 
 			activated = false; //single jump
+			in_air = false;
 		}
 	}
 }

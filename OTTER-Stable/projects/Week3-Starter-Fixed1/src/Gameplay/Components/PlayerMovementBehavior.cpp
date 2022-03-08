@@ -28,7 +28,7 @@ nlohmann::json PlayerMovementBehavior::ToJson() const {
 
 PlayerMovementBehavior::PlayerMovementBehavior() :
 	IComponent(),
-	_impulse(0.1f) //Movement Value
+	_impulse(1.0f) //Movement Value
 { }
 
 PlayerMovementBehavior::~PlayerMovementBehavior() = default;
@@ -56,11 +56,11 @@ void PlayerMovementBehavior::Update(float deltaTime) {
 	}
 	else
 	{
-		_impulse = 0.1f;
+		_impulse = 1.0f;
 	}
 
 	//IF SPACE PRESSED = MOVE
-	if (glfwGetKey(app.GetWindow(), GLFW_KEY_W)) {
+	if (glfwGetKey(app.GetWindow(), GLFW_KEY_D)) {
 		if (_body->GetLinearVelocity().y >= -5.0f) {
 			_body->ApplyImpulse(glm::vec3(0.0f, -_impulse, 0.0f));
 			//GetGameObject()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
@@ -69,7 +69,7 @@ void PlayerMovementBehavior::Update(float deltaTime) {
 		}
 	}
 
-	if (glfwGetKey(app.GetWindow(), GLFW_KEY_S)) {
+	if (glfwGetKey(app.GetWindow(), GLFW_KEY_A)) {
 		if (_body->GetLinearVelocity().y <= 5.0f) {
 			_body->ApplyImpulse(glm::vec3(0.0f, _impulse, 0.0f));
 			//GetGameObject()->SetRotation(glm::vec3(90.0f, 0.0f, 180.0f));
@@ -78,7 +78,7 @@ void PlayerMovementBehavior::Update(float deltaTime) {
 		}
 	}
 
-	if (glfwGetKey(app.GetWindow(), GLFW_KEY_A)) {
+	if (glfwGetKey(app.GetWindow(), GLFW_KEY_W)) {
 		if (_body->GetLinearVelocity().x <= 5.0f) {
 			_body->ApplyImpulse(glm::vec3(_impulse, 0.0f, 0.0f));
 
@@ -88,7 +88,7 @@ void PlayerMovementBehavior::Update(float deltaTime) {
 		}
 	}
 
-	if (glfwGetKey(app.GetWindow(), GLFW_KEY_D)) {
+	if (glfwGetKey(app.GetWindow(), GLFW_KEY_S)) {
 		if (_body->GetLinearVelocity().x >= -5.0f) {
 			_body->ApplyImpulse(glm::vec3(-_impulse, 0.0f, 0.0f));
 			//GetGameObject()->SetRotation(glm::vec3(90.0f, 0.0f, -90.0f));

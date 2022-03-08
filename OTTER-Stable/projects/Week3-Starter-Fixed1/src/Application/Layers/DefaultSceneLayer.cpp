@@ -94,6 +94,14 @@ void DefaultSceneLayer::OnUpdate()
 	{
 		player = _currentScene->FindObjectByName("Player");
 		enemy = _currentScene->FindObjectByName("Enemy");
+
+		//limit rotation
+		player->Get<Gameplay::Physics::RigidBody>()->SetAngularFactor(glm::vec3(0.0f, 0.0f, 0.0f));
+		player->Get<Gameplay::Physics::RigidBody>()->SetLinearDamping(0.9f);
+
+		//limit rotation
+		enemy->Get<Gameplay::Physics::RigidBody>()->SetAngularFactor(glm::vec3(0.0f, 0.0f, 0.0f));
+		enemy->Get<Gameplay::Physics::RigidBody>()->SetLinearDamping(0.9f);
 		activated = true;
 	}
 	if (activated)
@@ -371,10 +379,14 @@ void DefaultSceneLayer::_CreateScene()
 		// Set up all our sample objects
 		GameObject::Sptr plane = scene->CreateGameObject("Plane");
 		{
+			//plane->SetPostion(glm::vec3(0.0f, 0.0f, -0.08));
+			//plane->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
 			// Make a big tiled mesh
 			MeshResource::Sptr tiledMesh = ResourceManager::CreateAsset<MeshResource>();
 			tiledMesh->AddParam(MeshBuilderParam::CreatePlane(ZERO, UNIT_Z, UNIT_X, glm::vec2(80.0f), glm::vec2(20.0f)));
 			tiledMesh->GenerateMesh();
+
+
 
 			// Create and attach a RenderComponent to the object to draw our mesh
 			RenderComponent::Sptr renderer = plane->Add<RenderComponent>();
@@ -385,12 +397,12 @@ void DefaultSceneLayer::_CreateScene()
 			Gameplay::Physics::RigidBody::Sptr physics = plane->Add<Gameplay::Physics::RigidBody>(RigidBodyType::Kinematic);
 			Gameplay::Physics::BoxCollider::Sptr box = Gameplay::Physics::BoxCollider::Create();
 			//box->SetPosition(glm::vec3(0.04f, 0.6f, 0.18f));
-			box->SetScale(glm::vec3(50.0f, -0.12f, 50.0f));
+			box->SetScale(glm::vec3(50.0f, 50.0f, 0.0f));
 			physics->AddCollider(box);
 			Gameplay::Physics::TriggerVolume::Sptr volume = plane->Add<Gameplay::Physics::TriggerVolume>();
 			Gameplay::Physics::BoxCollider::Sptr box2 = Gameplay::Physics::BoxCollider::Create();
 			//box2->SetPosition(glm::vec3(0.00f, 0.05f, 0.0f));
-			box2->SetScale(glm::vec3(50.0f, -0.12f, 50.0f));
+			box2->SetScale(glm::vec3(50.0f, 50.0f, 50.0f));
 			volume->AddCollider(box2);
 			//give to our floor tiles to tag them
 			GroundBehaviour::Sptr behaviour = plane->Add<GroundBehaviour>();

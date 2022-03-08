@@ -152,12 +152,17 @@ void DefaultSceneLayer::_CreateScene()
 
 		// Load in the meshes
 		MeshResource::Sptr monkeyMesh = ResourceManager::CreateAsset<MeshResource>("Monkey.obj");
+		MeshResource::Sptr MarioMesh = ResourceManager::CreateAsset<MeshResource>("mario.obj");
+		MeshResource::Sptr KoopaMesh = ResourceManager::CreateAsset<MeshResource>("koopa.obj");
 
 		// Load in some textures
 		Texture2D::Sptr    boxTexture   = ResourceManager::CreateAsset<Texture2D>("textures/box-diffuse.png");
 		Texture2D::Sptr    boxSpec      = ResourceManager::CreateAsset<Texture2D>("textures/box-specular.png");
 		Texture2D::Sptr    monkeyTex    = ResourceManager::CreateAsset<Texture2D>("textures/monkey-uvMap.png");
 		Texture2D::Sptr    leafTex      = ResourceManager::CreateAsset<Texture2D>("textures/leaves.png");
+		Texture2D::Sptr    MarioTex = ResourceManager::CreateAsset<Texture2D>("textures/Mario_Tex1.png");
+		Texture2D::Sptr    KoopaTex = ResourceManager::CreateAsset<Texture2D>("textures/koopa_Tex.png");
+		Texture2D::Sptr    GroundTex = ResourceManager::CreateAsset<Texture2D>("textures/ground.png");
 		leafTex->SetMinFilter(MinFilter::Nearest);
 		leafTex->SetMagFilter(MagFilter::Nearest);
 
@@ -193,8 +198,14 @@ void DefaultSceneLayer::_CreateScene()
 		Material::Sptr boxMaterial = ResourceManager::CreateAsset<Material>(basicShader);
 		{
 			boxMaterial->Name = "Box";
-			boxMaterial->Set("u_Material.Diffuse", boxTexture);
+			boxMaterial->Set("u_Material.Diffuse", GroundTex);
 			boxMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+		Material::Sptr MarioMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			MarioMaterial->Name = "Mario";
+			MarioMaterial->Set("u_Material.Diffuse", MarioTex);
+			MarioMaterial->Set("u_Material.Shininess", 0.1f);
 		}
 
 		// This will be the reflective material, we'll make the whole thing 90% reflective
@@ -347,8 +358,29 @@ void DefaultSceneLayer::_CreateScene()
 		//	trigger->SetFlags(TriggerTypeFlags::Statics | TriggerTypeFlags::Kinematics);
 		//	trigger->AddCollider(BoxCollider::Create(glm::vec3(1.0f)));
 
-		//	monkey1->Add<TriggerVolumeEnterBehaviour>();
-		//}
+			monkey1->Add<TriggerVolumeEnterBehaviour>();
+		}
+		GameObject::Sptr Mario = scene->CreateGameObject("Mario");
+		{
+			// Set position in the scene
+			Mario->SetPostion(glm::vec3(4.5f, 0.0f, 1.0f));
+
+			// Add some behaviour that relies on the physics body
+			Mario->Add<JumpBehaviour>();
+
+			// Create and attach a renderer for the monkey
+			RenderComponent::Sptr renderer = Mario->Add<RenderComponent>();
+			renderer->SetMesh(MarioMesh);
+			renderer->SetMaterial(MarioMaterial);
+
+			// Example of a trigger that interacts with static and kinematic bodies as well as dynamic bodies
+			TriggerVolume::Sptr trigger = Mario->Add<TriggerVolume>();
+			trigger->SetFlags(TriggerTypeFlags::Statics | TriggerTypeFlags::Kinematics);
+			trigger->AddCollider(BoxCollider::Create(glm::vec3(1.0f)));
+
+			Mario->Add<TriggerVolumeEnterBehaviour>();
+		}
+
 
 		GameObject::Sptr demoBase = scene->CreateGameObject("Demo Parent");
 

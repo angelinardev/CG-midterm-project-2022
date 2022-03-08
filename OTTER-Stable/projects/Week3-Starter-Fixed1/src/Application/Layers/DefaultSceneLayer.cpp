@@ -77,13 +77,43 @@ DefaultSceneLayer::DefaultSceneLayer() :
 	ApplicationLayer()
 {
 	Name = "Default Scene";
-	Overrides = AppLayerFunctions::OnAppLoad;
+	Overrides = AppLayerFunctions::OnAppLoad | AppLayerFunctions::OnUpdate;
 }
 
 DefaultSceneLayer::~DefaultSceneLayer() = default;
 
 void DefaultSceneLayer::OnAppLoad(const nlohmann::json& config) {
 	_CreateScene();
+}
+
+void DefaultSceneLayer::OnUpdate()
+{
+	Application& app = Application::Get();
+	_currentScene = app.CurrentScene();
+	if (!activated)
+	{
+		player = _currentScene->FindObjectByName("Player");
+		enemy = _currentScene->FindObjectByName("Enemy");
+		activated = true;
+	}
+	if (activated)
+	{
+		if (win || lose)
+		{
+			exit(0); //close the game if we win or lost
+		}
+		if (enemy->Get<PlayerHealth>()->dead) //player died
+		{
+			lose = true;
+			std::cout << "Sorry, you lost to the koopa!/n";
+		}
+		else if (enemy->Get<EnemyHealth>()->dead)
+		{
+			win = true;
+			std::cout << "You defeated the koopa! Congratulations\n";
+		}
+	}
+
 }
 
 void DefaultSceneLayer::_CreateScene()

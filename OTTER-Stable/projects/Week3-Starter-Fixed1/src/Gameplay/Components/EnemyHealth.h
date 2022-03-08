@@ -18,7 +18,6 @@ public:
 	virtual void OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) override;
 	virtual void Update(float deltaTime) override;
 
-public:
 	virtual void RenderImGui() override;
 	MAKE_TYPENAME(EnemyHealth);
 	virtual nlohmann::json ToJson() const override;

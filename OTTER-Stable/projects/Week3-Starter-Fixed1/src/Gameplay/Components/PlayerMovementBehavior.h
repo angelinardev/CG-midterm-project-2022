@@ -33,7 +33,7 @@ protected:
 	
 	Gameplay::Physics::RigidBody::Sptr _body;
 
-	glm::quat currentRotation;
-	glm::quat targetRotation;
+	//glm::quat currentRotation;
+	//glm::quat targetRotation;
 	float speed = 5.0f;
 };
